@@ -163,15 +163,23 @@ So I wrote a query expansion module that has the LLM translate Chinese into vari
 
 ---
 
-### Dec 11 (Wed) | Helping Colleague Debug AI-Generated Code
+### Dec 11 (Wed) | Deeper Understanding of LinkAlign & Helping Colleague Debug
 
 **Tasks**
-- Continued LinkAlign tuning work
+- Continued testing LinkAlign, gaining deeper understanding of its core mechanism
 - Helped colleague debug a voice dialogue project's human-agent handoff feature
+
+**True Understanding of LinkAlign**
+
+Today while continuing to test LinkAlign, I discovered that I hadn't truly understood what it was doing. I previously thought its operation involved two LLMs conversing with each other to derive the optimal SQL. That's completely wrong—it actually uses its own vector retriever for Schema Linking, then hands off to the LLM for SQL generation. I was stunned. It's my fault for not truly understanding the paper.
+
+I used AI to help me read the paper, but Gemini 1.5 Pro might have higher hallucination rates and misled me about the paper's core mechanism. Reflecting on this: facing such professional, lengthy papers, if I don't rely on AI at all, research speed would be very slow; but if I don't thoroughly understand the problem before starting implementation, I'll end up spending even more time on corrections later. It's a dilemma.
+
+Going forward, I need to study each paper's specific operations more carefully, not just look at the general architecture. Continue trying more test data.
 
 **Additional Task**
 
-Yesterday, a colleague in the same office asked for help with a problem. Their project does sentiment recognition in voice dialogues—when negative emotions are detected, it automatically routes to human customer service. The project was entirely AI-written, but the human-agent handoff feature wasn't working properly.
+A colleague in the same office asked for help with a problem. Their project does sentiment recognition in voice dialogues—when negative emotions are detected, it automatically routes to human customer service. The project was entirely AI-written, but the human-agent handoff feature wasn't working properly.
 
 I used AI to analyze the code step by step, write tests, and locate the problem. Finally discovered it was a JavaScript scope issue—a variable wasn't correctly binding `this` in a callback function.
 
@@ -179,11 +187,11 @@ I'm not very familiar with JavaScript myself. I self-taught the front-end basics
 
 **Reflections**
 
-This experience made me think a lot. As an intern, why was I able to solve a problem that a full-time employee couldn't?
+Two deep insights today:
 
-First, I think I'm better at using AI. I continued the methodology I learned from my previous internship: have AI analyze problems step by step, rather than throwing it one big problem. First have AI read and understand the code architecture, then have it write test cases for specific functions, finally narrow down the problem range based on test results.
+**On Paper Reading:** AI-assisted paper reading is a double-edged sword. It definitely accelerates comprehension, but if the AI's interpretation is wrong (hallucination), you might waste a lot of time going in the wrong direction. Core technical details still need to be carefully extracted from the original paper—you can't completely rely on AI summaries.
 
-Second is mindset. Often it's not about how hard the problem is, but whether you have the patience to troubleshoot step by step.
+**On Helping Colleague Debug:** As an intern, why was I able to solve a problem that a full-time employee couldn't? First, I think I'm better at using AI—having AI analyze problems step by step, rather than throwing it one big problem. First have AI read and understand the code architecture, then have it write test cases for specific functions, finally narrow down the problem range based on test results. Second is mindset—often it's not about how hard the problem is, but whether you have the patience to troubleshoot step by step.
 
 ---
 
