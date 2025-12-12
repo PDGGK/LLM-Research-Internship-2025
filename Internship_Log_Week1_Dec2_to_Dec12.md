@@ -1,6 +1,6 @@
 # 🚀 Internship Log | Week 1
 
-> **Duration**: December 2, 2024 (Mon) - December 11, 2024 (Thu)  
+> **Duration**: December 2, 2025 (Tue) - December 12, 2025 (Fri)  
 > **Research Focus**: Multi-table Join Reasoning for Text-to-SQL in Large-Scale Schemas  
 > **Role**: AI Algorithm Intern
 
@@ -8,7 +8,7 @@
 
 ## 📅 Week 1 Overview
 
-### Dec 2 (Mon) | Onboarding
+### Dec 2 (Tue) | Onboarding
 
 **Tasks**
 - Arrived at the company in the evening
@@ -17,11 +17,11 @@
 
 **Reflections**
 
-First day at the company. Although my official start date is Thursday, I was eager to dive in. My mentor introduced the research focus—Multi-table Join Reasoning for Text-to-SQL, which converts natural language queries into SQL statements. Sounds fascinating!
+First day at the company. Although my official start date is Friday, I was eager to dive in. My mentor introduced the research focus—Multi-table Join Reasoning for Text-to-SQL, which converts natural language queries into SQL statements. Sounds fascinating!
 
 ---
 
-### Dec 3 (Tue) | Paper Reading Begins
+### Dec 3 (Wed) | Paper Reading Begins
 
 **Tasks**
 - Started systematic reading of core Text-to-SQL papers
@@ -40,7 +40,7 @@ After reading the first paper, I realized that with AI assistance, most papers a
 
 ---
 
-### Dec 4 (Wed) | Deep Dive into Graph-Based Approaches
+### Dec 4 (Thu) | Deep Dive into Graph-Based Approaches
 
 **Tasks**
 - In-depth study of **SteinerSQL**: Graph-constrained Text-to-SQL method
@@ -67,7 +67,7 @@ Honestly, I used to complain that Melbourne's curriculum wasn't helpful for job 
 
 ---
 
-### Dec 5 (Thu) | Official Start & Team Meeting
+### Dec 5 (Fri) | Official Start & Team Meeting
 
 **Tasks**
 - **Official first day**: Completed onboarding procedures
@@ -91,7 +91,7 @@ Presenting these papers' core techniques helped me develop a more systematic und
 
 ---
 
-### Dec 6 (Fri) | LinkAlign Implementation Exploration
+### Dec 8 (Mon) | LinkAlign Implementation Exploration
 
 **Tasks**
 - Started studying **LinkAlign** source code
@@ -117,7 +117,7 @@ The experimental environments, datasets, and hyperparameter configurations in pa
 
 ---
 
-### Dec 9 (Mon) | Environment Setup & Data Preparation
+### Dec 9 (Tue) | Environment Setup & Data Preparation
 
 **Tasks**
 - Completed LinkAlign project local environment configuration
@@ -136,7 +136,7 @@ Setting up the environment is always the most frustrating part. Spent most of th
 
 ---
 
-### Dec 10 (Tue) | Schema Linking Testing & Optimization
+### Dec 10 (Wed) | Schema Linking Testing & Optimization
 
 **Tasks**
 - Ran LinkAlign Schema Linking tests
@@ -163,7 +163,7 @@ So I wrote a query expansion module that has the LLM translate Chinese into vari
 
 ---
 
-### Dec 11 (Wed) | Deeper Understanding of LinkAlign & Helping Colleague Debug
+### Dec 11 (Thu) | Deeper Understanding of LinkAlign & Helping Colleague Debug
 
 **Tasks**
 - Continued testing LinkAlign, gaining deeper understanding of its core mechanism
@@ -192,6 +192,113 @@ Two deep insights today:
 **On Paper Reading:** AI-assisted paper reading is a double-edged sword. It definitely accelerates comprehension, but if the AI's interpretation is wrong (hallucination), you might waste a lot of time going in the wrong direction. Core technical details still need to be carefully extracted from the original paper—you can't completely rely on AI summaries.
 
 **On Helping Colleague Debug:** As an intern, why was I able to solve a problem that a full-time employee couldn't? First, I think I'm better at using AI—having AI analyze problems step by step, rather than throwing it one big problem. First have AI read and understand the code architecture, then have it write test cases for specific functions, finally narrow down the problem range based on test results. Second is mindset—often it's not about how hard the problem is, but whether you have the patience to troubleshoot step by step.
+
+---
+
+### Dec 12 (Fri) | LinkAlign Deep Analysis & Optimization Attempts
+
+**Tasks**
+
+- Conducted deep analysis and optimization attempts on LinkAlign
+- SQL Comparison Analysis: Analyzed 7 test cases, compared LinkAlign-generated SQL with correct SQL
+- Root Cause Investigation: Discovered 50% of Schema metadata (column descriptions) were missing
+- Designed and implemented Schema Auto-Enhancement solution
+- Modified SQL generation Prompt template
+- Validation testing and identified deeper algorithm issues
+
+**SQL Comparison Analysis**
+
+Detailed comparison of SQL generation results for each test case:
+- SQL Accuracy: 0/7 (0%)
+- Error causes:
+  - Wrong table selection (e.g., using `report_new_dev` instead of `t_bz_config_ci_ne_root`)
+  - Forced JOIN causing meaningless associations
+  - LLM output containing excessive `<think>` tags
+
+**Root Cause Investigation**
+
+Found two major issues when examining Schema files:
+
+1. **Schema Metadata Missing**:
+   - Examined `extract_mysql_schema.py` source code
+   - Confirmed schema is extracted from MySQL database's `COLUMN_COMMENT`
+   - Statistics: 1,679 out of 3,353 columns (50%) have null descriptions
+   - LinkAlign doesn't include a schema generation tool; papers use high-quality public datasets (Spider/BIRD)
+
+2. **Unreasonable Prompt Template**:
+   - Original Prompt forced JOIN for multi-table queries
+   - Simple queries don't need forced JOINs
+
+**Schema Auto-Enhancement Solution**
+
+Design: If database columns lack comments, use LLM to auto-generate descriptions based on column name, type, and sample data
+
+Implementation:
+- Created `extract_mysql_schema_enhanced.py` - full enhancement version
+- Created `enhance_core_tables.py` - quick core table enhancement version
+- Optimized Prompt to explicitly prohibit thinking process
+- Added response cleaning function to remove `<think>` tags and noise
+
+Test results:
+- 3 core tables: `t_bz_config_ci_ne_root`, `t_bz_config_customer`, `event_history`
+- Processed 155 columns, LLM generated 34 descriptions
+
+**Validation Testing & Key Discovery**
+
+Test case 5: "How many new devices came online last month"
+
+| Stage | Result |
+|:------|:-------|
+| Vector Retrieval | ✅ Found `t_bz_config_ci_ne_root` |
+| Reserve Protection | ⚠️ Not in protection list |
+| LLM Filter Round 1 | ❌ Filtered out (142 tables → 53 tables) |
+| Table Recall | 0% |
+
+**Unexpected Discovery: Not a Schema description issue, but a LinkAlign filtering algorithm flaw!**
+
+LinkAlign uses column voting to determine table relevance:
+```
+t_bz_config_ci_ne_root (75 columns):
+  - ONLINE_TIME: relevant ✅
+  - Other 74 columns: not relevant ❌
+  
+Vote result: 1/75 = 1.3%
+Decision: Filter out entire table ❌
+```
+
+Correct logic should be: If any key column is relevant → Keep entire table
+
+**Technical Output**
+
+- `extract_mysql_schema_enhanced.py` - Full enhancement version
+- `enhance_core_tables.py` - Quick core table enhancement version
+- `quick_validate.py` - Single case quick validation script
+- `sql_analysis_report.md` - SQL comparison analysis report
+- `validation_report.md` - Schema enhancement validation report
+
+**Reflections**
+
+Today's work demonstrated a complete problem-solving process:
+
+1. **Problem-oriented Research Method**: Observation → Initial Analysis → Hypothesis → Validation Experiment → Refute Hypothesis → Deep Investigation → New Hypothesis
+
+2. **Academia vs Engineering Gap**: Papers focus on algorithm innovation under ideal conditions; engineering needs to handle real-world complexity and imperfect data. Bridging this gap requires extensive adaptation and optimization work.
+
+3. **Schema Enhancement Didn't Solve the Problem**: I thought it was caused by missing Schema descriptions, spent 2 hours implementing the enhancement solution, only to discover the problem lies in the deeper filtering algorithm logic. A good lesson—confirm root cause before implementing solutions.
+
+**Next Steps**
+
+1. **Plan B: Core Table Whitelist**
+   - Modify `batch_test.py` to add forced retention logic
+   - Re-run tests to validate effectiveness
+
+2. **If Whitelist Works**:
+   - Full Schema enhancement (process remaining 1,645 columns)
+   - Complete batch testing (7 test cases)
+
+3. **If Still Ineffective**:
+   - Try modifying `response_filtering` voting logic
+   - Or consider other schema linking methods
 
 ---
 
