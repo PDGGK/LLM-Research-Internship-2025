@@ -1,109 +1,29 @@
-# 🚀 Internship Log | Week 1
+# 🚀 Internship Log | Week 2
 
-> **Duration**: December 2, 2025 (Tue) - December 12, 2025 (Fri)  
+> **Duration**: December 8, 2025 (Mon) - December 12, 2025 (Fri)  
 > **Research Focus**: Multi-table Join Reasoning for Text-to-SQL in Large-Scale Schemas  
 > **Role**: AI Algorithm Intern
 
 ---
 
-## 📅 Week 1 Overview
-
-### Dec 2 (Tue) | Onboarding
-
-**Tasks**
-- Arrived at the company in the evening
-- Initial meeting with mentor to understand research direction
-- Received project materials and started exploring Text-to-SQL background
-
-**Reflections**
-
-First day at the company. Although my official start date is Friday, I was eager to dive in. My mentor introduced the research focus—Multi-table Join Reasoning for Text-to-SQL, which converts natural language queries into SQL statements. Sounds fascinating!
-
----
-
-### Dec 3 (Wed) | Paper Reading Begins
-
-**Tasks**
-- Started systematic reading of core Text-to-SQL papers
-- Learned about benchmark datasets: Spider, BIRD
-- Understood the "Scale Wall" problem: LLM accuracy drops from 86% to 5% when database tables exceed 100
-
-**Papers Read**
-1. **CHESS** (arXiv:2405.16755): Contextual Harnessing for Efficient SQL Synthesis - Multi-agent collaboration framework
-2. **Using LLMs for Multi-hop Reasoning** (arXiv:2405.09593): Leveraging large language models for complex reasoning
-
-**Reflections**
-
-Started reading papers seriously today. This is my first time systematically reading arxiv papers. These are cutting-edge works—some haven't even been published in top venues yet. I genuinely feel I'm touching the frontier of technology.
-
-After reading the first paper, I realized that with AI assistance, most papers are understandable. The core innovations are often combinations and improvements of existing algorithms, not ground-breaking inventions from scratch. This gives me a more realistic view of what doing a research-focused Master's or PhD would actually be like.
-
----
-
-### Dec 4 (Thu) | Deep Dive into Graph-Based Approaches
-
-**Tasks**
-- In-depth study of **SteinerSQL**: Graph-constrained Text-to-SQL method
-- Learned about Steiner Tree algorithm application in Schema Linking
-- Read **SchemaGraphSQL**: Efficient Schema Linking with pathfinding algorithms
-- Understood multi-dimensional cost functions and graph traversal integration
-
-**Core Papers**
-- **SteinerSQL** (arXiv:2509.19623): Graph-Guided Mathematical Reasoning for Text-to-SQL Generation
-- **SchemaGraphSQL** (arXiv:2505.18363): Efficient Schema Linking with Pathfinding Graph Algorithms
-
-**Technical Highlights**
-- Schema Graph Construction: Model database schema as weighted undirected graph G=(V, E, C)
-- Multi-dimensional Cost Function: C_total = α·C_connect + β·C_sem + γ·C_stat
-- Terminal Node Mapping: Identify key tables through mathematical decomposition
-
-**Reflections**
-
-Today I encountered papers that use graph theory concepts to solve problems. SteinerSQL proposes using the **Steiner Tree** algorithm for Schema Linking—abstracting database tables as graph nodes, foreign key relationships as edges, then finding optimal paths connecting all key tables using minimum spanning tree-related algorithms.
-
-This reminded me of my graph theory courses at the University of Melbourne. Although the specific algorithm in the paper (Steiner Tree) might be different, the underlying graph theory concepts—modeling complex relationships as graphs and using graph algorithms to find optimal solutions—are exactly what I learned in school.
-
-Honestly, I used to complain that Melbourne's curriculum wasn't helpful for job hunting, as the university doesn't provide campus recruitment like Chinese universities do. But seeing these papers today, I realized that what I learned wasn't useless—I just didn't know where to apply it. Graph traversal, shortest paths, minimum spanning trees—these concepts actually matter in real AI algorithm implementations.
-
----
-
-### Dec 5 (Fri) | Official Start & Team Meeting
-
-**Tasks**
-- **Official first day**: Completed onboarding procedures
-- Continued reading: UNJOIN, LinkAlign
-- Attended team meeting and presented Text-to-SQL research summary
-
-**Papers Read**
-- **UNJOIN** (arXiv:2505.18122): Enhancing Multi-Table Text-to-SQL Generation via Schema Simplification
-- **LinkAlign** (arXiv:2503.18596): Scalable Schema Linking for Real-World Large-Scale Multi-Database Text-to-SQL
-
-**Presentation Content**
-- Introduced the "Scale Wall" problem and three core challenges: Semantic Retrieval Blindness, Topological Hallucination, Math-Schema Gap
-- Detailed explanation of SteinerSQL's graph algorithm engine
-- Overview of LinkAlign semantic alignment and UNJOIN schema simplification
-
-**Reflections**
-
-Officially started today! The afternoon presentation made me a bit nervous, but it went well overall. My mentor was satisfied with the research summary and suggested some directions for practical implementation.
-
-Presenting these papers' core techniques helped me develop a more systematic understanding. I also realized that understanding a paper is one thing, but explaining it clearly is another skill entirely.
-
----
+## 📅 Week 2 Overview
 
 ### Dec 8 (Mon) | LinkAlign Implementation Exploration
 
 **Tasks**
+
 - Started studying **LinkAlign** source code
 - Set up LinkAlign local development environment
 - Learned project architecture: Multi-round semantic enhanced retrieval + Schema Item Grounding
 - Continued reading related papers
 
 **Papers Read**
+
 - **Text-to-SQL Multi-table Join Prediction and Schema**: Multi-table join prediction methods
 - **(arXiv:2505.18744)**: Related retrieval enhancement methods
 
 **Technical Architecture**
+
 1. Draft Retrieval: Use vector search to get Top-K candidate tables
 2. Schema Audit: LLM audits the completeness of retrieval results
 3. Query Rewriting: Generate enhanced queries with Schema keywords
@@ -120,12 +40,14 @@ The experimental environments, datasets, and hyperparameter configurations in pa
 ### Dec 9 (Tue) | Environment Setup & Data Preparation
 
 **Tasks**
+
 - Completed LinkAlign project local environment configuration
 - Set up Python virtual environment, installed dependencies (LlamaIndex, sentence-transformers, etc.)
 - Modified LlamaIndex source code to adapt to project requirements
 - Wrote MySQL Schema extraction script, successfully extracted 344 tables and 3,353 columns from business database
 
 **Technical Details**
+
 - Using Qwen3-14B-awq as local LLM
 - Using BGE-large-en-v1.5 as Embedding model
 - Wrote `extract_mysql_schema.py` script to extract real business database Schema
@@ -139,16 +61,19 @@ Setting up the environment is always the most frustrating part. Spent most of th
 ### Dec 10 (Wed) | Schema Linking Testing & Optimization
 
 **Tasks**
+
 - Ran LinkAlign Schema Linking tests
 - Wrote `test_optimization.py`: Compare different modes (Agent/Pipeline) and parameters (top_k, turn_n)
 - Wrote `test_query_expansion.py`: Implement query expansion mechanism to solve Chinese-English mixed retrieval issues
 - Analyzed retrieval results, evaluated recall and precision
 
 **Optimization Approaches**
+
 - Implemented cross-lingual query expansion: Expand Chinese queries to include English keywords
 - Compared various retrieval strategies
 
 **Key Findings**
+
 - Agent mode performs better on complex queries but takes longer
 - Query expansion significantly improves retrieval recall for Chinese-English mixed Schemas
 - similarity_top_k and turn_n parameter tuning greatly affects precision
@@ -166,6 +91,7 @@ So I wrote a query expansion module that has the LLM translate Chinese into vari
 ### Dec 11 (Thu) | Deeper Understanding of LinkAlign & Helping Colleague Debug
 
 **Tasks**
+
 - Continued testing LinkAlign, gaining deeper understanding of its core mechanism
 - Helped colleague debug a voice dialogue project's human-agent handoff feature
 
@@ -175,7 +101,7 @@ Today while continuing to test LinkAlign, I discovered that I hadn't truly under
 
 I used AI to help me read the paper, but Gemini 1.5 Pro might have higher hallucination rates and misled me about the paper's core mechanism. Reflecting on this: facing such professional, lengthy papers, if I don't rely on AI at all, research speed would be very slow; but if I don't thoroughly understand the problem before starting implementation, I'll end up spending even more time on corrections later. It's a dilemma.
 
-Going forward, I need to study each paper's specific operations more carefully, not just look at the general architecture. Continue trying more test data.
+Going forward, I need to study each paper's specific operations more carefully, not just look at the general architecture.
 
 **Additional Task**
 
@@ -286,35 +212,9 @@ Today's work demonstrated a complete problem-solving process:
 
 3. **Schema Enhancement Didn't Solve the Problem**: I thought it was caused by missing Schema descriptions, spent 2 hours implementing the enhancement solution, only to discover the problem lies in the deeper filtering algorithm logic. A good lesson—confirm root cause before implementing solutions.
 
-**Next Steps**
-
-1. **Plan B: Core Table Whitelist**
-   - Modify `batch_test.py` to add forced retention logic
-   - Re-run tests to validate effectiveness
-
-2. **If Whitelist Works**:
-   - Full Schema enhancement (process remaining 1,645 columns)
-   - Complete batch testing (7 test cases)
-
-3. **If Still Ineffective**:
-   - Try modifying `response_filtering` voting logic
-   - Or consider other schema linking methods
-
 ---
 
-## 💭 Week 1 Reflections
-
-### On Research
-
-This is my first algorithm internship and my first time systematically reading arxiv papers. I feel I'm genuinely touching the cutting edge of technology—these papers are freshly published, some haven't even made it to conferences or journals yet.
-
-Many papers are impressive, but after understanding them, I found they're mostly combinations and improvements of existing algorithms, not ground-breaking inventions from scratch. This gives me a more realistic understanding of what pursuing a research Master's or PhD would actually involve—research isn't as unreachable as I previously imagined.
-
-### On University Curriculum
-
-I used to complain that Melbourne's curriculum wasn't helpful for job hunting, as the university doesn't provide campus recruitment. But several papers I read during this internship—especially SteinerSQL and SchemaGraphSQL—use graph theory-related algorithmic thinking. Although the specific algorithms might differ, the underlying concept—modeling complex problems as graphs and solving with graph algorithms—is exactly what Melbourne's graph theory courses taught.
-
-What I learned in school wasn't useless—I just didn't know where to apply it back then.
+## 💭 Week 2 Reflections
 
 ### On AI and the Future
 
@@ -332,14 +232,8 @@ I'm very grateful to have this algorithm internship opportunity as an undergradu
 
 | # | Paper | Core Contribution |
 |:---:|:---|:---|
-| 1 | **SteinerSQL** (arXiv:2509.19623) | Models Schema Linking as Steiner Tree problem, 40.04% SOTA |
-| 2 | **LinkAlign** (arXiv:2503.18596) | Multi-round semantic enhanced retrieval + Query Rewriting |
-| 3 | **UNJOIN** (arXiv:2505.18122) | Schema simplification, flattens multi-table to virtual wide table |
-| 4 | **SchemaGraphSQL** (arXiv:2505.18363) | Efficient Schema Linking with pathfinding graph algorithms |
-| 5 | **CHESS** (arXiv:2405.16755) | Multi-agent framework, context enhancement |
-| 6 | **Multi-hop Reasoning with LLMs** (arXiv:2405.09593) | Leveraging LLMs for complex reasoning |
-| 7 | **Text-to-SQL Multi-table Join Prediction** | Multi-table join prediction and Schema analysis |
-| 8 | **(arXiv:2505.18744)** | Retrieval enhancement methods |
+| 1 | **Text-to-SQL Multi-table Join Prediction** | Multi-table join prediction and Schema analysis |
+| 2 | **(arXiv:2505.18744)** | Retrieval enhancement methods |
 
 ---
 
