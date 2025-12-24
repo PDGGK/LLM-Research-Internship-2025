@@ -276,3 +276,281 @@ This also demonstrates:
 ---
 
 *Report generated: 2024-12-22 15:22*
+
+---
+
+### Dec 23 (Tue) | Full-Scale Enhancement Comparison & Research Direction Reflection ⚠️
+
+**Core Achievement**
+
+**Column-level Enhancement Strategy Validated**: Comparative experiments proved that core table enhancement (163 columns) far outperforms full-scale enhancement (3353 columns), with full-scale enhancement providing zero unique advantages.
+
+---
+
+#### 1. Full-Scale Column Enhancement Experiment
+
+**Experimental Design**
+- Used Qwen 32B to generate enhanced descriptions for all 3353 columns across 344 tables
+- Duration: 86.3 minutes (3190 successful, 0 failed)
+- Re-precomputed embeddings (3697 Schemas, 5.4 MB)
+
+**Results**
+
+| Approach | Full Recall Rate | Average Recall Rate |
+|----------|-----------------|---------------------|
+| Core Column Enhancement (163 cols) | **97.4%** | **99.5%** |
+| Full-Scale Enhancement (3353 cols) | 50.3% | 76.6% |
+
+**Recall rate actually dropped by 47 percentage points!**
+
+---
+
+#### 2. Root Cause Analysis
+
+**By Difficulty Comparison**
+
+| Difficulty | Core Column Enhanced | Full-Scale Enhanced | Gap |
+|------------|---------------------|---------------------|-----|
+| Easy | 100% | 76% | -24% |
+| Medium | 100% | 43.6% | -56.4% |
+| Hard | 92% | 31.7% | -60.3% |
+
+**Table-level vs Column-level Impact Analysis**
+
+| Retrieval Method | Core Column Enhanced | Full-Scale Enhanced |
+|-----------------|----------------------|---------------------|
+| Table-level Only | ~40% | 52.3% ✅ Slightly up |
+| Column-level Only | ~95% | 48.7% ❌ Significant drop |
+| Table+Column Fusion | 97.4% | 50.3% |
+
+**Finding**: Problem lies in column-level retrieval—95% of columns become noise in full-scale enhancement.
+
+**Failed Question Cross-Comparison**
+
+| Comparison Type | Count |
+|-----------------|-------|
+| Core column success + Full-scale fail | **142** |
+| Full-scale success + Core column fail | **0** |
+
+**Conclusion**: Full-scale enhancement has **zero unique advantages**.
+
+---
+
+#### 3. Technical Documentation
+
+**Embedding Precomputation Principles Deep Dive**
+
+Completed detailed technical documentation (~1100 lines), including:
+- Sparse vs Dense vectors
+- Transformer working principles
+- Attention mechanism explained
+- Q/K/V vector computation process
+- Encoder vs Decoder differences
+- Precomputation acceleration principles (207x speedup)
+
+---
+
+#### 4. Output Files
+
+| File | Description |
+|------|-------------|
+| `column_enhancement_comparison_report.md` | Core column vs Full-scale comparison report |
+| `embedding_precomputation_deep_dive.md` | Technical principles deep dive |
+| `recall_test_300_full_report.md` | 302-question recall test report |
+
+---
+
+#### 5. 💭 Deep Reflection: Fundamental Error in Research Direction
+
+> This reflection was written on Dec 24 about Dec 23's work, after discussing with my mentor and realizing the severity of the problem.
+
+**We made a fundamental error: wrong control variables.**
+
+**Incorrect Research Setup**
+
+Initially, by observing the data, I formed a hypothesis: some tables in our database are more important (like device types, usage records, fault records). I naively assumed that if I could enhance retrieval for these core tables, the overall algorithm accuracy would improve.
+
+Then I had DeepSeek generate test questions based on all 344 tables to test "whether we can retrieve these core tables each time."
+
+**This was completely wrong!**
+
+The correct approach should be:
+- **Have DeepSeek generate questions targeting the 3 core tables**
+- Then test whether we can retrieve these 3 tables from the 344 tables
+
+Not:
+- Have DeepSeek look at 344 tables and generate random questions
+- Hope the retrieval results happen to be core tables
+
+**This is classic "programming toward results"**
+
+We were misled by the test set's peculiarities:
+1. Case questions and DeepSeek-generated questions happened to involve core tables a lot
+2. So when I optimized core table retrieval, recall rate did go up
+3. But this was just **coincidence**, not actually solving the problem
+
+The real situation was completely different.
+
+**Wrong from the start, wrong all the way through**
+
+If we're researching a topic and haven't even defined the problem correctly, how can we claim research success?
+
+This experience made me realize:
+- **Problem definition is more important than the solution**
+- I used lots of AI assistance in research, but AI won't help you correct fundamental research setup errors
+- **Experts are still experts, PhDs are still PhDs**—I felt kind of stupid
+
+**Dec 24 Direction Adjustment**
+
+Based on this reflection, Dec 24 needed a major direction change:
+1. **Redefine the problem**: Clarify correct variable control
+2. **Redesign experiments**: Generate test questions targeting specific tables
+3. **Avoid programming toward results**: Decouple test sets from optimization targets
+
+This was a big lesson.
+
+---
+
+*Report generated: 2024-12-24*
+
+---
+
+### Dec 24 (Tue) | Milestone Success: 95.7% Recall Rate 🎉
+
+**Core Achievement**
+
+After discussing with my mentor last night, I discovered a fundamental error in my previous testing methodology. After redesigning the experimental approach, I finally improved retrieval recall rate from ~60% to **95.7%**. This is a very satisfying result.
+
+---
+
+#### 1. Retrospective: Yesterday's Struggles
+
+Yesterday's test results were terrible:
+
+| Difficulty | Recall Rate |
+|------------|-------------|
+| simple | ~80% |
+| medium | ~50% |
+| hard | **~20%** |
+
+I started feeling anxious—does my algorithm have no generalizability at all? Is this just "programming toward results" in specific scenarios?
+
+Even more frustrating, I looked at code implementations from many top conference papers (EMNLP, ACL), and they didn't perform well either. I began to wonder: is this direction a dead end?
+
+---
+
+#### 2. Turning Point: Discussion with Mentor
+
+After talking with my mentor last night, I suddenly realized where the problem was:
+
+**Previous Testing Method (Wrong)**:
+- Had DeepSeek randomly select tables from 344 tables to generate questions
+- Couldn't control variables, question quality was inconsistent
+- Many questions themselves were unreasonable
+
+**Correct Testing Method**:
+- Fix 3 core tables as the "answer"
+- Generate 300 questions using only these 3 tables (100 simple + 100 medium + 100 hard)
+- Test whether retrieval algorithm can find these 3 tables from 344 tables
+
+This is proper controlled variable experimentation!
+
+---
+
+#### 3. Today's Work
+
+##### 3.1 Regenerated 300 Test Questions
+
+- **Target tables**: t_bz_config_ci_ne_root, t_bz_config_customer, event_history
+- **Question distribution**: 100 simple + 100 medium + 100 hard
+- **Verification passed**: All questions only use these 3 tables
+
+##### 3.2 Discovered and Corrected Algorithm Understanding Error
+
+During testing, I found my previous understanding of "fusion strategy" was wrong:
+
+| Strategy | Description | Recall Rate |
+|----------|-------------|-------------|
+| Summed Score TOP-10 (Wrong understanding) | Table+Column scores summed, then TOP 10 | 81.7% |
+| **Union TOP-20 (Correct understanding)** | Table TOP-10 ∪ Column TOP-10 | **95.7%** |
+
+This discovery directly improved recall rate by **14 percentage points**!
+
+##### 3.3 Schema Version Comparison
+
+| Schema | Union Recall Rate |
+|--------|------------------|
+| **V2 Table-level Enhanced** | **95.7%** |
+| V4 LLM Full Enhancement | 70.7% |
+
+V4 actually performed worse, showing **longer descriptions aren't necessarily better**—they may introduce noise.
+
+##### 3.4 Code Organization
+
+Created independent `our_algorithm/` directory, decoupled from top conference paper code frameworks, making code structure clearer.
+
+---
+
+#### 4. Final Results
+
+| Difficulty | ✅Passed | Pass Rate |
+|------------|---------|-----------|
+| simple | 100/100 | **100%** |
+| medium | 96/100 | **96%** |
+| hard | 91/100 | **91%** |
+| **Total** | **287/300** | **95.7%** |
+
+Very satisfied with these results.
+
+---
+
+#### 5. Personal Reflections
+
+##### On "Working in Isolation"
+
+This experience made me deeply realize the **importance of communication**.
+
+Even with AI assistants like Claude, GPT, and Gemini, I still made a fundamental methodological error—poor test design. AI can help me write code, debug, and optimize algorithms, but it cannot help me escape my own cognitive blind spots.
+
+These "metacognitive" level issues still need experienced people (like mentors) to point out. A single sentence can enlighten me and save potentially days of detours.
+
+##### On "Milestone Success"
+
+95.7% recall rate means the **retrieval stage can be concluded for now**. Next, I can focus on:
+- SQL generation optimization
+- End-to-end complete testing
+
+Learning this field from scratch and reaching this stage in three weeks is pretty good.
+
+##### Still Much to Learn
+
+Text-to-SQL, Schema Linking, Sparse/Dense retrieval... these are all completely new fields for me. Getting this far is largely due to continuous trial-and-error and timely consultation.
+
+There's still a long road ahead.
+
+---
+
+#### 6. Output Files
+
+| File | Description |
+|------|-------------|
+| `docs/milestone_20241224/test_questions_3tables_300.json` | 300 test questions |
+| `docs/milestone_20241224/retrieval_final_report.md` | Final test report |
+| `docs/milestone_20241224/schema_versions.md` | Schema version comparison |
+| `our_algorithm/README.md` | Algorithm usage instructions |
+| `our_algorithm/retriever.py` | Core retriever (union strategy) |
+
+---
+
+#### 7. Next Steps
+
+| Priority | Task |
+|----------|------|
+| P0 | Conduct SQL generation test based on 95.7% recall rate |
+| P1 | Analyze 13 failed cases, see if further optimization is possible |
+
+---
+
+*Log date: 2024-12-24*
+*Core achievement: Recall rate improved from ~60% to 95.7%, retrieval stage milestone completed*
+
