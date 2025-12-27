@@ -554,3 +554,123 @@ There's still a long road ahead.
 *Log date: 2024-12-24*
 *Core achievement: Recall rate improved from ~60% to 95.7%, retrieval stage milestone completed*
 
+---
+
+### Dec 25 (Wed) | SQL Generation Approach Design & Code Implementation
+
+**Core Achievement**
+
+After completing the retrieval stage optimization, moved into the SQL generation stage. Designed two approaches and completed code implementation with 150-question batch testing.
+
+---
+
+#### 1. Background
+
+On Dec 24, using 3 tables to generate 300 questions for large-scale testing showed good retrieval performance (95.7% recall rate). Now tackling the SQL generation phase.
+
+#### 2. Two SQL Generation Approaches
+
+| Approach | Name | Description |
+|----------|------|-------------|
+| A | Direct Generation | Pass the complete Schema of 10-20 retrieved tables directly to LLM, let LLM select needed tables and generate SQL |
+| B | Filter-Then-Generate | First use LLM to filter 3-5 most relevant tables from 10-20, then generate SQL with refined Schema |
+
+#### 3. Main Work
+
+1. **Improved `table_filter.py`** - Implemented Approach B's table filtering
+   - Load table-level Schema (with column info)
+   - Use LLM for table filtering
+
+2. **Improved `sql_generator.py`** - Implemented SQL generation
+   - Build complete table Schema text (table name, description, column name, column type, column description)
+   - Call LLM to generate SQL
+
+3. **150-Question Batch Test**
+   - Generated `scheme_a_150_results.json` and `scheme_b_150_results.json`
+   - Produced detailed SQL Review reports
+
+---
+
+*Log date: 2024-12-25*
+*Core achievement: Two SQL generation approaches designed and implemented, 150-question batch test completed*
+
+---
+
+### Dec 26 (Thu) | End-to-End Testing & Approach Comparison
+
+**Core Achievement**
+
+Completed 7-question end-to-end testing with original questions. Approach A achieved **85.7%** accuracy, significantly outperforming Approach B (28.6%).
+
+---
+
+#### 1. Main Work
+
+1. **7-Question End-to-End Test with Original Questions**
+   - Used 7 human-calibrated questions from `cc_result.csv`
+   - Complete pipeline: Retrieval → Filtering (Approach B) → SQL Generation
+   - Strict comparison with manually verified correct answers
+
+2. **LLM Input Statistics**
+   
+   | Metric | Value |
+   |--------|-------|
+   | Average Schema per question | ~9,400 tokens |
+   | Percentage of 32B model context | ~29% |
+   | Confirmed: Only 10 tables passed | ✅ (not 344) |
+
+3. **Final Test Results**
+
+   | Approach | Accuracy |
+   |:--------:|:--------:|
+   | **A** | **85.7%** (6/7) |
+   | **B** | **28.6%** (2/7) |
+
+4. **Approach B Failure Analysis**
+   - Filtering errors: Wrong table selection or missing critical tables (e.g., customer table)
+   - SQL generation errors: Missing filter conditions, wrong field names
+
+#### 2. Output Files
+
+| File | Description |
+|------|-------------|
+| `docs/milestone_20241226/original_7q_full_report.md` | Complete end-to-end report |
+| `docs/milestone_20241226/original_7q_results_v2.json` | Test result data |
+| `cc_result.csv` | Updated with Approach A/B SQL and evaluation results |
+
+---
+
+#### 3. Personal Reflections
+
+1. **Step by Step, Steady Progress**
+   - Any project requires solid, incremental progress
+   - The hardest part of this project was the earlier retrieval optimization stage
+
+2. **Post-Retrieval Still Requires Careful Attention**
+   - After retrieval, the SQL generation stage also needs careful handling
+   - Approach B's filtering logic still has room for optimization
+
+3. **Future Directions**
+   - New Year approaching, the hardest retrieval part has been conquered
+   - Can continue studying top conference papers (ACL, EMNLP, NeurIPS Text-to-SQL work)
+   - Explore better table filtering strategies to improve Approach B accuracy
+
+---
+
+#### 4. Weekly Summary
+
+| Date | Main Work |
+|------|-----------|
+| 12/22 | Column-level Schema enhancement experiment, 99.2% recall rate |
+| 12/23 | Full-scale enhancement comparison, proved core table enhancement beats full-scale |
+| 12/24 | Corrected test methodology, 3-table 300-question retrieval test, 95.7% recall |
+| 12/25 | SQL generation approach design, code improvements, 150-question batch test |
+| 12/26 | 7-question end-to-end test, Approach A/B comparison, report generation |
+
+**Key Conclusion**: Approach A (directly using 10 tables) currently outperforms Approach B (filtering to 3-5 tables first), mainly because Approach B's filtering step is prone to missing critical tables or using wrong fields.
+
+---
+
+*Log date: 2024-12-26*
+*Core achievement: End-to-end testing completed, Approach A accuracy 85.7%, SQL generation stage initial milestone reached*
+
